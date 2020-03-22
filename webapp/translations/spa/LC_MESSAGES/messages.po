@@ -1,0 +1,266 @@
+# Spanish (Spain) translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-03-22 10:06+0800\n"
+"PO-Revision-Date: 2020-03-21 20:52+0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es<LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: webapp/__init__.py:24
+msgid "Please log in to access this page"
+msgstr ""
+
+#: webapp/forms.py:15 webapp/forms.py:23 webapp/forms.py:44
+msgid "Username"
+msgstr "Nombre de usuario"
+
+#: webapp/forms.py:16 webapp/forms.py:25 webapp/forms.py:74
+msgid "Password"
+msgstr "Contraseña"
+
+#: webapp/forms.py:17
+msgid "Remember Me"
+msgstr "Recordarme"
+
+#: webapp/forms.py:18
+msgid "Sign in"
+msgstr ""
+
+#: webapp/forms.py:24 webapp/forms.py:68
+msgid "Email"
+msgstr "Email"
+
+#: webapp/forms.py:27 webapp/forms.py:76
+msgid "Repeat Password"
+msgstr "Repetir Contraseña"
+
+#: webapp/forms.py:28 webapp/templates/register.html:5
+msgid "Register"
+msgstr "Registrarse"
+
+#: webapp/forms.py:34 webapp/forms.py:56
+msgid "Please use a different username."
+msgstr "Por favor use un nombre de usuario diferente."
+
+#: webapp/forms.py:39
+msgid "Please use a different email address."
+msgstr "Por favor use una dirección de email diferente."
+
+#: webapp/forms.py:45
+msgid "About me"
+msgstr ""
+
+#: webapp/forms.py:46 webapp/forms.py:63
+msgid "Submit"
+msgstr ""
+
+#: webapp/forms.py:61
+msgid "Say something"
+msgstr ""
+
+#: webapp/forms.py:69 webapp/forms.py:77
+msgid "Request Password Reset"
+msgstr ""
+
+#: webapp/myemail.py:31
+msgid "[Microblog] Reset Your Password"
+msgstr ""
+
+#: webapp/routes.py:28
+msgid "Your post is now live!"
+msgstr ""
+
+#: webapp/routes.py:37 webapp/templates/base.html:21
+msgid "Home"
+msgstr ""
+
+#: webapp/routes.py:63
+msgid "Invalid username or password"
+msgstr ""
+
+#: webapp/routes.py:81 webapp/templates/login.html:5
+msgid "Sign In"
+msgstr "Ingresar"
+
+#: webapp/routes.py:102
+msgid "Congratulations, you are now a registered user!"
+msgstr ""
+
+#: webapp/routes.py:141
+msgid "Your changes have been saved."
+msgstr ""
+
+#: webapp/routes.py:146 webapp/templates/edit_profile.html:5
+msgid "Edit Profile"
+msgstr ""
+
+#: webapp/routes.py:156 webapp/routes.py:173
+#, python-format
+msgid "User %(username)s not found."
+msgstr ""
+
+#: webapp/routes.py:159
+msgid "You cannot follow yourself!"
+msgstr ""
+
+#: webapp/routes.py:163
+#, python-format
+msgid "You are following %(username)s!"
+msgstr ""
+
+#: webapp/routes.py:176
+msgid "You cannot unfollow yourself!"
+msgstr ""
+
+#: webapp/routes.py:180
+#, python-format
+msgid "You are not following %(username)s."
+msgstr ""
+
+#: webapp/routes.py:195 webapp/templates/base.html:22
+msgid "Explore"
+msgstr ""
+
+#: webapp/routes.py:209
+msgid "Check your email for the instructions to reset your password"
+msgstr ""
+
+#: webapp/routes.py:212 webapp/templates/reset_password_request.html:5
+msgid "Reset Password"
+msgstr ""
+
+#: webapp/routes.py:227
+msgid "Your password has been reset."
+msgstr ""
+
+#: webapp/translate.py:12
+msgid "Error: the translation server is not configured."
+msgstr ""
+
+#: webapp/translate.py:31
+msgid "Error: the translation server failed."
+msgstr ""
+
+#: webapp/templates/404.html:4
+msgid "Not Found"
+msgstr ""
+
+#: webapp/templates/404.html:5 webapp/templates/500.html:6
+msgid "Back"
+msgstr ""
+
+#: webapp/templates/500.html:4
+msgid "An unexpected error has occurred"
+msgstr ""
+
+#: webapp/templates/500.html:5
+msgid "The administrator has been notified. Sorry for the inconvenience!"
+msgstr ""
+
+#: webapp/templates/_post.html:14
+#, python-format
+msgid "%(username)s said %(when)s"
+msgstr ""
+
+#: webapp/templates/_post.html:25
+msgid "Translate"
+msgstr ""
+
+#: webapp/templates/base.html:4
+msgid "Welcome to Microblog"
+msgstr ""
+
+#: webapp/templates/base.html:26
+msgid "Login"
+msgstr ""
+
+#: webapp/templates/base.html:28
+msgid "Profile"
+msgstr ""
+
+#: webapp/templates/base.html:29
+msgid "Logout"
+msgstr ""
+
+#: webapp/templates/base.html:67
+msgid "Error: Could not contact server."
+msgstr ""
+
+#: webapp/templates/index.html:5
+#, python-format
+msgid "Hi, %(username)s!"
+msgstr ""
+
+#: webapp/templates/index.html:17 webapp/templates/user.html:29
+msgid "Newer posts"
+msgstr ""
+
+#: webapp/templates/index.html:22 webapp/templates/user.html:34
+msgid "Older posts"
+msgstr ""
+
+#: webapp/templates/login.html:12
+msgid "New User?"
+msgstr ""
+
+#: webapp/templates/login.html:12
+msgid "Click to Register!"
+msgstr ""
+
+#: webapp/templates/login.html:14
+msgid "Forgot Your Password?"
+msgstr ""
+
+#: webapp/templates/login.html:15
+msgid "Click to Reset It"
+msgstr ""
+
+#: webapp/templates/reset_password.html:5
+msgid "Reset Your Password"
+msgstr ""
+
+#: webapp/templates/user.html:8
+msgid "User"
+msgstr ""
+
+#: webapp/templates/user.html:10
+msgid "Last seen on"
+msgstr ""
+
+#: webapp/templates/user.html:11
+#, python-format
+msgid "%(count)d followers"
+msgstr ""
+
+#: webapp/templates/user.html:11
+#, python-format
+msgid "%(count)d following"
+msgstr ""
+
+#: webapp/templates/user.html:13
+msgid "Edit your profile"
+msgstr ""
+
+#: webapp/templates/user.html:15
+msgid "Follow"
+msgstr ""
+
+#: webapp/templates/user.html:17
+msgid "Unfollow"
+msgstr ""
+
+#~ msgid "Please log in to access this page."
+#~ msgstr "Por favor ingrese para acceder a esta página."
+

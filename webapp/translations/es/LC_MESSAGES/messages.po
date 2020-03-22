@@ -1,4 +1,4 @@
-# Spanish (Spain) translations for PROJECT.
+# Spanish translations for PROJECT.
 # Copyright (C) 2020 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-03-22 10:06+0800\n"
-"PO-Revision-Date: 2020-03-21 20:52+0800\n"
+"POT-Creation-Date: 2020-03-22 14:08+0800\n"
+"PO-Revision-Date: 2020-03-22 11:36+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
-"Language-Team: es<LL@li.org>\n"
+"Language-Team: es <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -19,8 +19,8 @@ msgstr ""
 "Generated-By: Babel 2.8.0\n"
 
 #: webapp/__init__.py:24
-msgid "Please log in to access this page"
-msgstr ""
+msgid "Please login to access this page"
+msgstr "Por favor ingrese para acceder a esta página."
 
 #: webapp/forms.py:15 webapp/forms.py:23 webapp/forms.py:44
 msgid "Username"
@@ -36,7 +36,7 @@ msgstr "Recordarme"
 
 #: webapp/forms.py:18
 msgid "Sign in"
-msgstr ""
+msgstr "Ingresar"
 
 #: webapp/forms.py:24 webapp/forms.py:68
 msgid "Email"
@@ -60,35 +60,35 @@ msgstr "Por favor use una dirección de email diferente."
 
 #: webapp/forms.py:45
 msgid "About me"
-msgstr ""
+msgstr "Acerca de mí"
 
 #: webapp/forms.py:46 webapp/forms.py:63
 msgid "Submit"
-msgstr ""
+msgstr "Enviar"
 
 #: webapp/forms.py:61
 msgid "Say something"
-msgstr ""
+msgstr "Dí algo"
 
 #: webapp/forms.py:69 webapp/forms.py:77
 msgid "Request Password Reset"
-msgstr ""
+msgstr "Pedir una nueva contraseña"
 
 #: webapp/myemail.py:31
 msgid "[Microblog] Reset Your Password"
-msgstr ""
+msgstr "[Microblog] Nueva Contraseña"
 
 #: webapp/routes.py:28
 msgid "Your post is now live!"
-msgstr ""
+msgstr "¡Tu artículo ha sido publicado!"
 
 #: webapp/routes.py:37 webapp/templates/base.html:21
 msgid "Home"
-msgstr ""
+msgstr "Inicio"
 
 #: webapp/routes.py:63
 msgid "Invalid username or password"
-msgstr ""
+msgstr "Nombre de usuario o contraseña inválidos"
 
 #: webapp/routes.py:81 webapp/templates/login.html:5
 msgid "Sign In"
@@ -96,171 +96,189 @@ msgstr "Ingresar"
 
 #: webapp/routes.py:102
 msgid "Congratulations, you are now a registered user!"
-msgstr ""
+msgstr "¡Felicitaciones, ya eres un usuario registrado!"
 
 #: webapp/routes.py:141
 msgid "Your changes have been saved."
-msgstr ""
+msgstr "Tus cambios han sido salvados."
 
 #: webapp/routes.py:146 webapp/templates/edit_profile.html:5
 msgid "Edit Profile"
-msgstr ""
+msgstr "Editar Perfil"
 
 #: webapp/routes.py:156 webapp/routes.py:173
 #, python-format
 msgid "User %(username)s not found."
-msgstr ""
+msgstr "El usuario %(username)s no ha sido encontrado."
 
 #: webapp/routes.py:159
 msgid "You cannot follow yourself!"
-msgstr ""
+msgstr "¡No te puedes seguir a tí mismo!"
 
 #: webapp/routes.py:163
 #, python-format
 msgid "You are following %(username)s!"
-msgstr ""
+msgstr "¡Ahora estás siguiendo a %(username)s!"
 
 #: webapp/routes.py:176
 msgid "You cannot unfollow yourself!"
-msgstr ""
+msgstr "¡No te puedes dejar de seguir a tí mismo!"
 
 #: webapp/routes.py:180
 #, python-format
 msgid "You are not following %(username)s."
-msgstr ""
+msgstr "No estás siguiendo a %(username)s."
 
 #: webapp/routes.py:195 webapp/templates/base.html:22
 msgid "Explore"
-msgstr ""
+msgstr "Explorar"
 
 #: webapp/routes.py:209
 msgid "Check your email for the instructions to reset your password"
-msgstr ""
+msgstr "Busca en tu email las instrucciones para crear una nueva contraseña"
 
 #: webapp/routes.py:212 webapp/templates/reset_password_request.html:5
 msgid "Reset Password"
-msgstr ""
+msgstr "Nueva Contraseña"
 
 #: webapp/routes.py:227
 msgid "Your password has been reset."
-msgstr ""
+msgstr "Tu contraseña ha sido cambiada."
 
 #: webapp/translate.py:12
-msgid "Error: the translation server is not configured."
-msgstr ""
+msgid "Error: the translation service is not configured."
+msgstr "Error: el servicio de traducciones no está configurado."
 
-#: webapp/translate.py:31
-msgid "Error: the translation server failed."
-msgstr ""
+#: webapp/translate.py:34
+msgid "Error: the translation service failed."
+msgstr "Error el servicio de traducciones ha fallado."
 
 #: webapp/templates/404.html:4
 msgid "Not Found"
-msgstr ""
+msgstr "Página No Encontrada"
 
 #: webapp/templates/404.html:5 webapp/templates/500.html:6
 msgid "Back"
-msgstr ""
+msgstr "Atrás"
 
 #: webapp/templates/500.html:4
 msgid "An unexpected error has occurred"
-msgstr ""
+msgstr "Ha ocurrido un error inesperado"
 
 #: webapp/templates/500.html:5
 msgid "The administrator has been notified. Sorry for the inconvenience!"
-msgstr ""
+msgstr "El administrador ha sido notificado. ¡Lamentamos la inconveniencia!"
 
 #: webapp/templates/_post.html:14
 #, python-format
 msgid "%(username)s said %(when)s"
-msgstr ""
+msgstr "%(username)s dijo %(when)s"
 
 #: webapp/templates/_post.html:25
 msgid "Translate"
-msgstr ""
+msgstr "Traducir"
 
 #: webapp/templates/base.html:4
 msgid "Welcome to Microblog"
-msgstr ""
+msgstr "Bienvenido a Microblog"
 
 #: webapp/templates/base.html:26
 msgid "Login"
-msgstr ""
+msgstr "Ingresar"
 
 #: webapp/templates/base.html:28
 msgid "Profile"
-msgstr ""
+msgstr "Perfil"
 
 #: webapp/templates/base.html:29
 msgid "Logout"
-msgstr ""
+msgstr "Salir"
 
 #: webapp/templates/base.html:67
 msgid "Error: Could not contact server."
-msgstr ""
+msgstr "Error: el servidor no pudo ser contactado."
 
 #: webapp/templates/index.html:5
 #, python-format
 msgid "Hi, %(username)s!"
-msgstr ""
+msgstr "¡Hola, %(username)s!"
 
 #: webapp/templates/index.html:17 webapp/templates/user.html:29
 msgid "Newer posts"
-msgstr ""
+msgstr "Artículos siguientes"
 
 #: webapp/templates/index.html:22 webapp/templates/user.html:34
 msgid "Older posts"
-msgstr ""
+msgstr "Artículos previos"
 
 #: webapp/templates/login.html:12
 msgid "New User?"
-msgstr ""
+msgstr "¿Usuario Nuevo?"
 
 #: webapp/templates/login.html:12
 msgid "Click to Register!"
-msgstr ""
+msgstr "¡Haz click aquí para registrarte!"
 
 #: webapp/templates/login.html:14
 msgid "Forgot Your Password?"
-msgstr ""
+msgstr "¿Te olvidaste tu contraseña?"
 
 #: webapp/templates/login.html:15
 msgid "Click to Reset It"
-msgstr ""
+msgstr "Haz click aquí para pedir una nueva"
 
 #: webapp/templates/reset_password.html:5
 msgid "Reset Your Password"
-msgstr ""
+msgstr "Nueva Contraseña"
 
 #: webapp/templates/user.html:8
 msgid "User"
-msgstr ""
+msgstr "Usuario"
 
 #: webapp/templates/user.html:10
 msgid "Last seen on"
-msgstr ""
+msgstr "Última visita"
 
 #: webapp/templates/user.html:11
 #, python-format
 msgid "%(count)d followers"
-msgstr ""
+msgstr "%(count)d seguidores"
 
 #: webapp/templates/user.html:11
 #, python-format
 msgid "%(count)d following"
-msgstr ""
+msgstr "siguiendo a %(count)d"
 
 #: webapp/templates/user.html:13
 msgid "Edit your profile"
-msgstr ""
+msgstr "Editar tu perfil"
 
 #: webapp/templates/user.html:15
 msgid "Follow"
-msgstr ""
+msgstr "Seguir"
 
 #: webapp/templates/user.html:17
 msgid "Unfollow"
-msgstr ""
+msgstr "Dejar de seguir"
 
 #~ msgid "Please log in to access this page."
 #~ msgstr "Por favor ingrese para acceder a esta página."
+
+#~ msgid "Reset  Password"
+#~ msgstr "Nueva Contraseña"
+
+#~ msgid "Error: the translation service is not configured."
+#~ msgstr "Error: el servicio de traducciones no está configurado."
+
+#~ msgid "Error: the translation service failed."
+#~ msgstr "Error el servicio de traducciones ha fallado."
+
+#~ msgid "Please log in to access this page"
+#~ msgstr ""
+
+#~ msgid "Error: the translation server is not configured."
+#~ msgstr "Error: el servicio de traducciones no está configurado."
+
+#~ msgid "Error: the translation server failed."
+#~ msgstr "Error el servicio de traducciones ha fallado."
 

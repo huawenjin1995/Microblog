@@ -233,11 +233,11 @@ def reset_password(token):
 @app.route('/translate', methods=['POST'])
 @login_required
 def translate_text():
-    des_language = request.form['dest_language']
-    if des_language == 'es_ES':     #西班牙语
-        des_language = 'spa'
+    # des_language = request.form['dest_language']
+    # if des_language == 'es_ES':     #西班牙语
+    #     des_language = 'spa'
     # return (request.form['dest_language'])
     return jsonify({'text':translate(request.form['text'],
                                      request.form['source_language'],
-                                     des_language)})
+                                     request.form['dest_language'])})
 

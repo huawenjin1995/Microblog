@@ -9,7 +9,7 @@ from webapp import app
 #利用百度翻译API提供文本翻译
 def translate(text, source_language, dest_language):
     if 'BD_TRANSLATOR_KEY' not in app.config or not app.config['BD_TRANSLATOR_KEY']:
-        return _('Error: the translation server is not configured.')
+        return _('Error: the translation service is not configured.')
     url = "http://api.fanyi.baidu.com/api/trans/vip/translate"
     appid = '20200321000402156'
     salt = random.randint(32768, 65536)     #生成一个随机数
@@ -17,6 +17,9 @@ def translate(text, source_language, dest_language):
     m = hashlib.new('md5')
     m.update(sign.encode(encoding='utf-8'))
     msign = m.hexdigest()                   #得到原始签名的MD5值
+
+    if dest_language == 'es':       #pybabel 与百度翻译对应的语言缩写不一致
+        dest_language = 'spa'
 
     data= {
         'q': text,
@@ -28,7 +31,7 @@ def translate(text, source_language, dest_language):
     }
     r = requests.get(url, params=data)
     if r.status_code != 200:
-        return _('Error: the translation server failed.')
+        return _('Error: the translation service failed.')
     # print(json.loads(r.content.decode('utf-8')))
     return json.loads(r.content.decode('utf-8'))['trans_result'][0]['dst']
 

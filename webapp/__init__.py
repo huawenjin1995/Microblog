@@ -21,7 +21,7 @@ db = SQLAlchemy(app)                #数据库
 login = LoginManager(app)           #管理用户登录
 login.login_view = 'login'
 #强制用户在查看应用的特定页面之前登录,上面的'login'值是登录视图函数（endpoint）名
-login.login_message = _l('Please log in to access this page')
+login.login_message = _l('Please login to access this page')
 
 #migrate数据库迁移引擎,通过运行  'flask db init' 来创建迁移存储库,
 #'flask db migrate' 子命令生成这些自动迁移：flask db migrate命令
@@ -50,7 +50,7 @@ babel = Babel(app)
 @babel.localeselector
 def get_locale():
     # return request.accept_languages.best_match(app.config['LANGUAGES'])
-    return 'spa'
+    return 'es'
 
 #****通过邮件发送错误***
 if not app.debug:

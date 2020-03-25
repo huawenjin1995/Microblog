@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<style type="text/css">
+     a:link{
+         color:blue;
+         text-decoration: none;
+     }
+     a:visited{
+         color:red;
+         text-decoration: none;
+     }
+     a:hover{
+         color:black;
+         text-decoration: none;
+     }
+     a:active{
+         color:black;
+         text-decoration: underline;
+     }
+</style>
+    <h1>
+        {{_('You are Labling: %(table_name)s', table_name=table_name)}}
+    </h1>
+    {% if source_id %}
+        <p>{{_('Select to relabeled')}}</p>
+        {% for id in source_id %}
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('reset_data_label',table_name=table_name, id=id) }}">{{id}}</a></li>
+            </ul>
+        {% endfor %}
+    {% endif %}
+    {% if text %}
+    <textarea name="labling data" rows="10" cols="120">
+        {{text}}
+    </textarea>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-4">
+            {% if form %}
+                {{ wtf.quick_form(form) }}
+                <br>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

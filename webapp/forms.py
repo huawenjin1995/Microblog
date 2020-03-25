@@ -2,11 +2,13 @@
 #***定义表单类***
 
 from flask_wtf import FlaskForm
-from wtforms import StringField , PasswordField, BooleanField, SubmitField, TextAreaField      #表单字段的类
-from wtforms.validators import DataRequired, ValidationError,Email, EqualTo, Length
+from wtforms import StringField , PasswordField, BooleanField, SubmitField, TextAreaField, RadioField, IntegerField      #表单字段的类
+from wtforms.validators import DataRequired, ValidationError,Email, EqualTo, Length, NumberRange
 from webapp.models import User
 #字段中的可选参数validators用于验证字段是否符合预期,DataRequired验证器仅验证字段输入是否为空
 from flask_babel import _, lazy_gettext as _l
+from config import lable
+
 
 #***用户登录表单***
 class LoginForm(FlaskForm):
@@ -75,3 +77,28 @@ class ResetPasswordForm(FlaskForm):
     password2 = PasswordField(
         _l('Repeat Password'), validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField(_l('Request Password Reset'))
+
+
+#***请求标注数据***
+class DataLabelRequestForm(FlaskForm):
+    table_name = StringField(_l('Select Data'), validators=[DataRequired(), ])
+    submit = SubmitField(_l('Submit'))
+
+
+
+#***数据标注***
+class DataLabelForm(FlaskForm):
+    #根据客户要求制作标签
+    leval = IntegerField(_l('leval'),validators=[DataRequired(),
+                        NumberRange(1,3)],description='评价（3:好，2：中等，1：差）')
+    cost_perform = IntegerField(_l('cost_perform'),validators=[DataRequired(),
+                        NumberRange(1,3)],description='性价比（3:好，2：中等，1：差）')
+    appearance = IntegerField(_l('appearance'),validators=[DataRequired(),
+                        NumberRange(1,3)],description='外观（3:好，2：中等，1：差）')
+    applicability = IntegerField(_l('applicability'),validators=[DataRequired(),
+                        NumberRange(1,3)],description='使用性（3:好，2：中等，1：差）')
+    submit = SubmitField(_l('Submit'))
+
+
+
+

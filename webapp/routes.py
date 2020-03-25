@@ -1,7 +1,8 @@
 #coding: utf-8
 from flask import render_template, flash, redirect, url_for, request, g, jsonify
 from webapp import app, db
-from webapp.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
+from webapp.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm,\
+    ResetPasswordRequestForm, ResetPasswordForm, DataLabelRequestForm, DataLabelForm
 from flask_login import current_user, login_user, logout_user, login_required
 from webapp.models import User, Post
 from werkzeug.urls import url_parse
@@ -10,6 +11,9 @@ from datetime import datetime
 from webapp.myemail import send_password_reset_email
 from guess_language import guess_language
 from webapp.translate import translate
+import config
+from data_label.client_db import client_db
+from data_label.server_label_db import LabelData, update_LabelData, write_form
 
 
 
@@ -129,6 +133,7 @@ def before_request():
     g.locale = str(get_locale())
 
 
+
 #***修改用户个人资料***
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
@@ -240,4 +245,86 @@ def translate_text():
     return jsonify({'text':translate(request.form['text'],
                                      request.form['source_language'],
                                      request.form['dest_language'])})
+
+
+#判断有没有待标注的数据，有：返回True
+def is_data_to_label():
+    total_data = len(client_db.get_column('id'))  # 总数据行数
+    if total_data > len(LabelData.query.filter_by(is_labled=1).all()):  # 有未标记的
+        return True
+    else:
+        return False
+
+#***选择需要标注的数据***
+@app.route('/request_label', methods=['GET', 'POST'])
+@login_required
+def request_label():
+    form = DataLabelRequestForm()
+    client_db_table = config.table
+
+    if form.validate_on_submit():
+        if form.table_name.data != client_db_table:     #输入的数据表名错误
+            flash(_('Please Select Valid Data!'))
+            return redirect(url_for('request_label'))
+        return redirect(url_for('data_label',table_name=client_db_table))
+    if request.method == 'GET':
+        if is_data_to_label():                          #有数据未标注
+            return render_template('request_label.html',table_name=client_db_table, form=form)
+        #无数据标注
+        return redirect(url_for('data_label',table_name=client_db_table))
+
+
+#***数据标注***
+@app.route('/data_label', methods=['GET', 'POST'])
+@login_required
+def data_label():
+    form = DataLabelForm()
+    if 'table_name' not in request.args or not request.args['table_name']:
+        return redirect(url_for('request_label'))
+    table_name = request.args['table_name']
+    data = LabelData.get_unlabeled(LabelData)  # 获取未标注的记录
+    if data:
+        text = client_db.get_one_data(id=data.source_id)[0]
+    else:
+        flash('All data is labeled! Modify the labeled data')
+        return redirect(url_for('reset_data_label', table_name=table_name))
+    if form.validate_on_submit():           #有效提交，开始读写数据库
+        update_LabelData(record=data,form=form, current_user=current_user)  #更新记录
+        return redirect(url_for('data_label',table_name=table_name))
+
+    # if request.method == 'GET':
+    #     return render_template('data_label.html', form=form, text=text, table_name=table_name)
+    return render_template('data_label.html', form=form,text=text,table_name=table_name)
+
+
+#***修改已经标注过的数据***
+@app.route('/reset_data_label', methods=['GET', 'POST'])
+@login_required
+def reset_data_label():
+    form = DataLabelForm()
+    table_name = request.args['table_name']
+    data = LabelData.query.filter_by(laber=current_user.username).all()#当前user标注的所有数据
+    if data:
+        source_id = [item.source_id for item in data]                  #数据在客户数据库中的id列表
+        if 'id' in request.args and request.args['id']:
+            id = int(request.args['id'])
+            text = client_db.get_one_data(id=id)[0]
+            #用数据库中原来标注信息回填form
+            labeled_data = LabelData.query.filter_by(source_id=id).first()
+            write_form(record=labeled_data,form=form)                   #写表单
+            return render_template('reset_data_label.html', table_name=table_name,
+                                   source_id=source_id,text=text,form=form)
+
+        if form.validate_on_submit():  # 有效提交，开始读写数据库
+            id = int(request.args['id'])
+            data = LabelData.query.filter_by(source_id=id).first()
+            update_LabelData(record=data, form=form, current_user=current_user)     #更新记录
+            return redirect(url_for('reset_data_label', table_name=table_name))
+
+        return render_template('reset_data_label.html',table_name=table_name,
+                               source_id=source_id)
+
+    else:
+        flash('You have no data to relabeled')
+        return redirect(url_for('index'))
 

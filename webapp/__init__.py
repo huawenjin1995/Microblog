@@ -19,6 +19,11 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)                #数据库
 
 login = LoginManager(app)           #管理用户登录
+@login.user_loader
+def load_user(user_id):
+	return None
+
+
 login.login_view = 'login'
 #强制用户在查看应用的特定页面之前登录,上面的'login'值是登录视图函数（endpoint）名
 login.login_message = _l('Please login to access this page')
@@ -50,7 +55,10 @@ babel = Babel(app)
 @babel.localeselector
 def get_locale():
     # return request.accept_languages.best_match(app.config['LANGUAGES'])
-    return 'es'
+    return 'en'
+
+
+
 
 #****通过邮件发送错误***
 if not app.debug:

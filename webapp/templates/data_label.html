@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    {% if table_name %}
+    <h1>
+        {{_('You are Labling: %(table_name)s', table_name=table_name)}}
+    </h1>
+    <textarea name="labling data" rows="10" cols="120">
+        {{text}}
+    </textarea>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-4">
+            {% if form %}
+                {{ wtf.quick_form(form) }}
+                <br>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

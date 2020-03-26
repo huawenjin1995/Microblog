@@ -303,9 +303,17 @@ def data_label():
 def reset_data_label():
     form = DataLabelForm()
     table_name = request.args['table_name']
-    data = LabelData.query.filter_by(laber=current_user.username).all()#当前user标注的所有数据
+    data = LabelData.query.filter_by(laber=current_user.username)#当前user标注的所有数据
     if data:
-        source_id = [item.source_id for item in data]                  #数据在客户数据库中的id列表
+        # 分页
+        page = request.args.get('page', 1, type=int)
+        data = data.paginate(
+            page, app.config['POSTS_PER_PAGE'], False)
+        next_url = url_for('reset_data_label', table_name=table_name, source_id=data.items, page=data.next_num) \
+            if data.has_next else None
+        prev_url = url_for('reset_data_label', table_name=table_name, source_id=data.items, page=data.prev_num) \
+            if data.has_prev else None
+
         if 'id' in request.args and request.args['id']:
             id = int(request.args['id'])
             text = client_db.get_one_data(id=id)[0]
@@ -313,17 +321,18 @@ def reset_data_label():
             labeled_data = LabelData.query.filter_by(source_id=id).first()
             write_form(record=labeled_data,form=form)                   #写表单
             return render_template('reset_data_label.html', table_name=table_name,
-                                   source_id=source_id,text=text,form=form)
+                                   source_id=data.items,text=text,form=form,page=page,
+                                   next_url=next_url,prev_url=prev_url)
 
         if form.validate_on_submit():  # 有效提交，开始读写数据库
             id = int(request.args['id'])
-            data = LabelData.query.filter_by(source_id=id).first()
-            update_LabelData(record=data, form=form, current_user=current_user)     #更新记录
+            record = LabelData.query.filter_by(source_id=id).first()
+            update_LabelData(record=record, form=form, current_user=current_user)     #更新记录
             return redirect(url_for('reset_data_label', table_name=table_name))
 
-        return render_template('reset_data_label.html',table_name=table_name,
-                               source_id=source_id)
-
+        return render_template('reset_data_label.html', table_name=table_name,
+                               source_id=data.items, page=page, next_url=next_url,
+                               prev_url=prev_url)
     else:
         flash('You have no data to relabeled')
         return redirect(url_for('index'))

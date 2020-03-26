@@ -19,6 +19,13 @@
          color:black;
          text-decoration: underline;
      }
+     a{
+
+     display:inline-block;
+
+      margin:0px  10px;
+
+}
 </style>
     <h1>
         {{_('You are Labling: %(table_name)s', table_name=table_name)}}
@@ -26,10 +33,22 @@
     {% if source_id %}
         <p>{{_('Select to relabeled')}}</p>
         {% for id in source_id %}
-            <ul class="nav navbar-nav">
-                <li><a href="{{ url_for('reset_data_label',table_name=table_name, id=id) }}">{{id}}</a></li>
-            </ul>
+            <a href="{{ url_for('reset_data_label',table_name=table_name, id=id.source_id) }}">{{id.source_id}}</a>
         {% endfor %}
+    <nav aria-label="...">
+        <ul class="pager">
+            <li class="previous{% if not prev_url %} disabled{% endif %}">
+                <a href="{{ prev_url or '#' }}">
+                    <span aria-hidden="true">&larr;</span> {{_('Prev Page')}}
+                </a>
+            </li>
+            <li class="next{% if not next_url %} disabled{% endif %}">
+                <a href="{{ next_url or '#' }}">
+                    {{_('Next Page')}} <span aria-hidden="true">&rarr;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
     {% endif %}
     {% if text %}
     <textarea name="labling data" rows="10" cols="120">

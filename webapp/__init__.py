@@ -35,7 +35,6 @@ login.login_message = _l('Please login to access this page')
 migrate = Migrate(app, db)
 
 
-
 # print(app.config['SECRET_KEY'])
 # print(app.config['SQLALCHEMY_DATABASE_URI'])current_user.username
 # print(app.debug)
@@ -56,8 +55,6 @@ babel = Babel(app)
 def get_locale():
     # return request.accept_languages.best_match(app.config['LANGUAGES'])
     return 'en'
-
-
 
 
 #****通过邮件发送错误***

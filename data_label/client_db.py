@@ -38,19 +38,19 @@ client_db = DB_Client()             #实例化客户数据库
 
 
 if __name__ == '__main__':
-    client_db.db.execute('drop table if exists Evaluations;')
-    try:
-        Evaluations = '''
-        CREATE TABLE Evaluations
-        (
-          id        int             NOT NULL auto_increment primary key,
-          data      varchar(16000)  NOT NULL ,
-          data_md5  varchar(128)    NOT NULL unique
-        )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'''
-
-        client_db.db.execute(Evaluations)
-    except Exception as e:
-        app.logger.info(e)
+    # client_db.db.execute('drop table if exists Evaluations;')
+    # try:
+    #     Evaluations = '''
+    #     CREATE TABLE Evaluations
+    #     (
+    #       id        int             NOT NULL auto_increment primary key,
+    #       data      varchar(16000)  NOT NULL ,
+    #       data_md5  varchar(128)    NOT NULL unique
+    #     )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;'''
+    #
+    #     client_db.db.execute(Evaluations)
+    # except Exception as e:
+    #     app.logger.info(e)
 
     data_md5_list = client_db.get_column('data_md5')           #获取插入的行号列表
     sql = "INSERT INTO Evaluations(data, data_md5) VALUES ('%s', '%s')"

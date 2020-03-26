@@ -23,7 +23,12 @@ class LabelData(db.Model):
 
 #初始化标注用的表LabelData， 将客户数据表中的id 依次写入LabelData的source_id
 def init_LabelData():
-    for source_id in client_db.get_column('id'):
+    LabelData_sourceid = LabelData.query.filter(LabelData.source_id >= 0).all()
+    client_db_id = client_db.get_column('id')                                #客户数据库id列表
+    source_id_list = [item.source_id for item in LabelData_sourceid]         #数据标注工作表中的source_id列表
+    for source_id in source_id_list:
+        client_db_id.remove(source_id)                                       #获取还未插入到工作表中的source_id
+    for source_id in client_db_id:
         # print(source_id)
         source_id = LabelData(source_id=source_id, is_labled=0)
         db.session.add(source_id)
@@ -59,10 +64,10 @@ def write_form(record, form):
 
 if __name__ == '__main__':
     #删除Lble_Data中的数据
-    idlist = LabelData.query.filter(LabelData.id >= 0).all()
-    for id in idlist:
-        db.session.delete(id)
-    db.session.commit()
+    # idlist = LabelData.query.filter(LabelData.id >= 0).all()
+    # for id in idlist:
+    #     db.session.delete(id)
+    # db.session.commit()
 
     init_LabelData()
-    print(LabelData.get_unlabled(LabelData))
+    print(LabelData.get_unlabeled(LabelData))

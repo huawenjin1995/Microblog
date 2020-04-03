@@ -61,3 +61,20 @@ Commands:
 
 
 
+### 新增文本标注功能
+
+1. 该模块对应 data_label
+2. 需要安装celery和redis : 将文本预测和文本训练放在celery 的worker
+
+运行，redis作为消息代理
+
+​	3.运行flask前需启动redis和celery，运行redis命令: "redis-server"
+
+运行celery命令: "celery worker -A microblog.celery --loglevel=info"
+
+
+
+###  新增根据访问者的IP限制其访问频率，频次
+
+-  利用flask_limiter实现对访问者的访问频次进行限制，特别是与数据库相关的路由需要加以限制，以免频繁对数据库操作导致数据库崩溃。
+

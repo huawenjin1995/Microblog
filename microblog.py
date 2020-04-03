@@ -1,7 +1,7 @@
 #coding: utf-8
 #导入应用实例, 用来运行flask
 
-from webapp import app, db, cli
+from webapp import app, db, cli, celery
 from webapp.models import User, Post
 
 

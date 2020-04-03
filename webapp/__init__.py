@@ -11,6 +11,10 @@ from logging.handlers import RotatingFileHandler
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
+from flask_session import Session
+from celery import Celery
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 
 app = Flask(__name__)
@@ -56,6 +60,18 @@ def get_locale():
     # return request.accept_languages.best_match(app.config['LANGUAGES'])
     return 'en'
 
+Session(app)
+
+#初始化celery
+celery = Celery(app.name,broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
+
+#根据访问者的IP限制其访问频率，频次
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["30 per minute", "1 per second"],
+)
 
 #****通过邮件发送错误***
 if not app.debug:

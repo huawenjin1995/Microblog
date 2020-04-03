@@ -2,8 +2,8 @@
 #***定义表单类***
 
 from flask_wtf import FlaskForm
-from wtforms import StringField , PasswordField, BooleanField, SubmitField, TextAreaField, RadioField, IntegerField      #表单字段的类
-from wtforms.validators import DataRequired, ValidationError,Email, EqualTo, Length, NumberRange
+from wtforms import StringField , PasswordField, BooleanField, SubmitField, TextAreaField, SelectMultipleField     #表单字段的类
+from wtforms.validators import DataRequired, ValidationError,Email, EqualTo, Length
 from webapp.models import User
 #字段中的可选参数validators用于验证字段是否符合预期,DataRequired验证器仅验证字段输入是否为空
 from flask_babel import _, lazy_gettext as _l
@@ -88,17 +88,23 @@ class DataLabelRequestForm(FlaskForm):
 
 #***数据标注***
 class DataLabelForm(FlaskForm):
+
     #根据客户要求制作标签
-    leval = IntegerField(_l('leval'),validators=[DataRequired(),
-                        NumberRange(1,3)],description='评价（3:好，2：中等，1：差）')
-    cost_perform = IntegerField(_l('cost_perform'),validators=[DataRequired(),
-                        NumberRange(1,3)],description='性价比（3:好，2：中等，1：差）')
-    appearance = IntegerField(_l('appearance'),validators=[DataRequired(),
-                        NumberRange(1,3)],description='外观（3:好，2：中等，1：差）')
-    applicability = IntegerField(_l('applicability'),validators=[DataRequired(),
-                        NumberRange(1,3)],description='使用性（3:好，2：中等，1：差）')
+    level = SelectMultipleField(
+        label='情感类别',
+        validators=[DataRequired('请选择标签')],
+        render_kw={
+            'class': 'form-control'
+        },
+        choices=[(0,'0'),(1, '1'), (2, '2'), (3, '3')],
+        default=4,
+        coerce=int
+
+    )
     submit = SubmitField(_l('Submit'))
 
 
-
+#***训练数据***
+class TrainlabelForm(FlaskForm):
+    submit = SubmitField(_('Trian Data'))
 

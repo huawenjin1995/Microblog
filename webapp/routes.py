@@ -1,8 +1,8 @@
 #coding: utf-8
-from flask import render_template, flash, redirect, url_for, request, g, jsonify
-from webapp import app, db
+from flask import render_template, flash, redirect, url_for, request, g, jsonify, session
+from webapp import app, db, limiter
 from webapp.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm,\
-    ResetPasswordRequestForm, ResetPasswordForm, DataLabelRequestForm, DataLabelForm
+    ResetPasswordRequestForm, ResetPasswordForm, DataLabelRequestForm, DataLabelForm, TrainlabelForm
 from flask_login import current_user, login_user, logout_user, login_required
 from webapp.models import User, Post
 from werkzeug.urls import url_parse
@@ -11,10 +11,10 @@ from datetime import datetime
 from webapp.myemail import send_password_reset_email
 from guess_language import guess_language
 from webapp.translate import translate
-import config
-from data_label.client_db import client_db
-from data_label.server_label_db import LabelData, update_LabelData, write_form
-
+import config, time
+from data_label.populate_label_data import db_label
+from data_label.server_label_db import  write_form, predict_labels, train_datas
+from webapp.listPagination import ListPagination
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -248,9 +248,9 @@ def translate_text():
 
 
 #判断有没有待标注的数据，有：返回True
-def is_data_to_label():
-    total_data = len(client_db.get_column('id'))  # 总数据行数
-    if total_data > len(LabelData.query.filter_by(is_labled=1).all()):  # 有未标记的
+def is_data_to_label(table):
+    unlabeled_data = db_label.get_one_unlabeled(table=table)
+    if unlabeled_data:      # 有未标记的
         return True
     else:
         return False
@@ -261,6 +261,7 @@ def is_data_to_label():
 def request_label():
     form = DataLabelRequestForm()
     client_db_table = config.table
+    # client_db_table = 'Test'
 
     if form.validate_on_submit():
         if form.table_name.data != client_db_table:     #输入的数据表名错误
@@ -268,7 +269,7 @@ def request_label():
             return redirect(url_for('request_label'))
         return redirect(url_for('data_label',table_name=client_db_table))
     if request.method == 'GET':
-        if is_data_to_label():                          #有数据未标注
+        if is_data_to_label(table=client_db_table):                          #有数据未标注
             return render_template('request_label.html',table_name=client_db_table, form=form)
         #无数据标注
         return redirect(url_for('data_label',table_name=client_db_table))
@@ -282,33 +283,158 @@ def data_label():
     if 'table_name' not in request.args or not request.args['table_name']:
         return redirect(url_for('request_label'))
     table_name = request.args['table_name']
-    data = LabelData.get_unlabeled(LabelData)  # 获取未标注的记录
-    if data:
-        text = client_db.get_one_data(id=data.source_id)[0]
-    else:
-        flash('All data is labeled! Modify the labeled data')
-        return redirect(url_for('reset_data_label', table_name=table_name))
-    if form.validate_on_submit():           #有效提交，开始读写数据库
-        update_LabelData(record=data,form=form, current_user=current_user)  #更新记录
+    unlabeled_data = db_label.get_one_unlabeled(table=table_name)                 #获取未标注的记录(id,text)
+
+    if not unlabeled_data:
+        flash('All data is labeled! Train the labeled data')
+        return render_template('data_label.html',table_name=table_name)
+    #未标注的数据的id,和文本
+    id = unlabeled_data[0][0]
+    text = unlabeled_data[1]
+
+    if form.validate_on_submit():                      #有效提交，开始读写数据库
+        #更新记录
+        label = form.level.data[0]
+        db_label.update_one_label(id=id,label=label, username=current_user.username,
+                                  table=table_name)
         return redirect(url_for('data_label',table_name=table_name))
 
-    # if request.method == 'GET':
-    #     return render_template('data_label.html', form=form, text=text, table_name=table_name)
+    label = db_label.get_one_data(id=id,table=table_name, column='label')
+    # return str(label[0])
+    if label:
+        write_form(label=label, form=form)  # 写表单
     return render_template('data_label.html', form=form,text=text,table_name=table_name)
 
 
-#***修改已经标注过的数据***
+#***预测标签***
+@app.route('/predict_label', methods=['GET','POST'])
+@limiter.limit("2 per minute")                          #限制每分钟访问次数
+@login_required
+def predict_label():
+    if request.method == 'GET':
+        if 'table_name' not in request.args or not request.args['table_name']:
+            return redirect(url_for('request_label'))
+        table_name = request.args['table_name']
+        return render_template('predict_label.html', table_name=table_name)
+
+    if request.method == 'POST':
+        table_name = config.table
+        task = predict_labels.delay(table=table_name)       #开始预测
+        return jsonify({}), 202, {'Location': url_for('predict_taskstatus',
+                                                      task_id=task.id)}
+
+#***预测任务进度***
+@app.route('/predict_taskstatus/<task_id>')
+def predict_taskstatus(task_id):
+    task = predict_labels.AsyncResult(task_id)
+    if task.state == 'PENDING':
+        response = {
+            'state': task.state,
+            'current': 0,
+            'total': 1,
+            'status': 'Pending...'
+        }
+
+    if task.state == 'SUCCESS':
+        response = {
+            'state': task.state,
+            'current': 1,
+            'total': 1,
+            'status': 'SUCCESS...'
+        }
+
+    elif task.state == 'FAILURE':
+        response = {
+            'state': task.state,
+            'current': task.info.get('current', 0),
+            'total': task.info.get('total', 1),
+            'status': task.info.get('status', '')
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+        return jsonify(response)
+    else:
+        # something went wrong in the background job
+        response = {
+            'state': task.state,
+            'current': 0,
+            'total': 1,
+            'status': str(task.info),  # this is the exception raised
+        }
+    return jsonify(response)
+
+
+#***训练数据***
+@app.route('/train_label_data', methods=['GET','POST'])
+@limiter.limit("2 per minute")                          #限制每分钟访问一次
+@login_required
+def train_label_data():
+    if request.method == 'GET':
+        if 'table_name' not in request.args or not request.args['table_name']:
+            return redirect(url_for('request_label'))
+        table_name = request.args['table_name']
+        return render_template('train_label.html', table_name=table_name)
+    if request.method == 'POST':
+        table_name = config.table
+        session['train_flag'] = 1 if session.get('train_flag') != 1 else 0      #交替训练
+        task = train_datas.delay(flag=session['train_flag'],table=table_name)   #训练数据
+        return jsonify({}), 202, {'Location': url_for('train_taskstatus',
+                                                      task_id=task.id)}
+
+#***训练任务进度***
+@app.route('/train_taskstatus/<task_id>')
+def train_taskstatus(task_id):
+    task = train_datas.AsyncResult(task_id)
+    if task.state == 'PENDING':
+        response = {
+            'state': task.state,
+            'current': 0,
+            'total': 1,
+            'status': 'Pending...'
+        }
+
+    if task.state == 'SUCCESS':
+        response = {
+            'state': task.state,
+            'current': 1,
+            'total': 1,
+            'status': 'SUCCESS...'
+        }
+
+    elif task.state == 'FAILURE':
+        response = {
+            'state': task.state,
+            'current': task.info.get('current', 0),
+            'total': task.info.get('total', 1),
+            'status': task.info.get('status', '')
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+        return jsonify(response)
+    else:
+        # something went wrong in the background job
+        response = {
+            'state': task.state,
+            'current': 0,
+            'total': 1,
+            'status': str(task.info),  # this is the exception raised
+        }
+    return jsonify(response)
+
+
+
+#***修改预测标签与实际标签不符的数据***
 @app.route('/reset_data_label', methods=['GET', 'POST'])
+@limiter.limit("3 per minute")
 @login_required
 def reset_data_label():
     form = DataLabelForm()
     table_name = request.args['table_name']
-    data = LabelData.query.filter_by(laber=current_user.username)#当前user标注的所有数据
-    if data:
+    dif_id = db_label.get_diff_predict(username=current_user.username,table=table_name)
+    if dif_id:
         # 分页
         page = request.args.get('page', 1, type=int)
-        data = data.paginate(
-            page, app.config['POSTS_PER_PAGE'], False)
+        data = ListPagination(dif_id,page=page)
         next_url = url_for('reset_data_label', table_name=table_name, source_id=data.items, page=data.next_num) \
             if data.has_next else None
         prev_url = url_for('reset_data_label', table_name=table_name, source_id=data.items, page=data.prev_num) \
@@ -316,22 +442,24 @@ def reset_data_label():
 
         if 'id' in request.args and request.args['id']:
             id = int(request.args['id'])
-            text = client_db.get_one_data(id=id)[0]
+            text = db_label.get_one_data(id=id,table=table_name)
             #用数据库中原来标注信息回填form
-            labeled_data = LabelData.query.filter_by(source_id=id).first()
-            write_form(record=labeled_data,form=form)                   #写表单
+            label = db_label.get_one_data(id=id, table=table_name,column='label')
+            # return str(label[0])
+            write_form(label=label,form=form)                       #写表单
+
             return render_template('reset_data_label.html', table_name=table_name,
                                    source_id=data.items,text=text,form=form,page=page,
                                    next_url=next_url,prev_url=prev_url)
 
         if form.validate_on_submit():  # 有效提交，开始读写数据库
             id = int(request.args['id'])
-            record = LabelData.query.filter_by(source_id=id).first()
-            update_LabelData(record=record, form=form, current_user=current_user)     #更新记录
+            db_label.update_one_label(id=id,form=form,username=current_user.username,
+                                      table=table_name)             #更改label
             return redirect(url_for('reset_data_label', table_name=table_name))
 
         return render_template('reset_data_label.html', table_name=table_name,
-                               source_id=data.items, page=page, next_url=next_url,
+                               source_id=data.items,page=page, next_url=next_url,
                                prev_url=prev_url)
     else:
         flash('You have no data to relabeled')

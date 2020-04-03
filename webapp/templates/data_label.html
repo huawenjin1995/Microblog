@@ -6,6 +6,15 @@
     <h1>
         {{_('You are Labling: %(table_name)s', table_name=table_name)}}
     </h1>
+    <p>
+        <a href="{{ url_for('predict_label',table_name=table_name) }}">{{_("Predict")}}</a>
+    </p>
+    <p>
+        <a href="{{ url_for('reset_data_label',table_name=table_name) }}">{{_("Reset label")}}</a>
+    </p>
+    <p>
+        <a href="{{ url_for('train_label_data',table_name=table_name) }}">{{_("Train")}}</a>
+    </p>
     <textarea name="labling data" rows="10" cols="120">
         {{text}}
     </textarea>
